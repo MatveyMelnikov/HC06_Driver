@@ -4,5 +4,5 @@
 
 void hc06_delay(uint32_t delay)
 {
-    HAL_Delay(delay);
+  HAL_Delay(delay);
 }
