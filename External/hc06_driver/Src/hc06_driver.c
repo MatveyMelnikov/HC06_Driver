@@ -6,8 +6,9 @@
 #include <string.h>
 #include <stdio.h>
 
-static char buffer[20];
+static char buffer[HC06_BUFFER_SIZE];
 static char *baudrate_cmd = "AT+UART=%u,0,0\r\n";
+static char *change_name_cmd = "AT+NAME=%s\r\n";
 static char *hex_symbols = "123456789A";
 static const uint32_t baudrate_int[] = {
   1200, 2400, 4800, 9600, 19200, 38400, 
@@ -32,6 +33,11 @@ static void set_baudrate_cmd(hc06_baudrate baudrate)
   sprintf(buffer, baudrate_cmd, GET_BAUDRATE_INT(baudrate));
 }
 
+static void set_change_name_cmd(const char *const name)
+{
+  sprintf(buffer, change_name_cmd, name);
+}
+
 static hc06_status send_at_cmd()
 {
   hc06_io_write((uint8_t*)buffer, strlen(buffer));
@@ -50,6 +56,7 @@ static hc06_status send_at_cmd()
 void hc06_create()
 {
   hc06_io_set_baudrate(GET_BAUDRATE_INT(HC06_9600));
+  //hc06_set_baudrate(HC06_9600);
   current_baudrate = HC06_9600;
 }
 
@@ -87,4 +94,16 @@ hc06_baudrate hc_06_determine_baudrate(void)
   }
 
   return baudrate;
+}
+
+// The name is limited in 20 characters
+// (Guangzhou HC IT HC-06 product datasheet pg. 16).
+hc06_status hc06_set_name(const char* const name)
+{
+  if (strlen(name) > 20)
+    return HC06_ERROR;
+
+  set_change_name_cmd(name);
+
+  return send_at_cmd();
 }

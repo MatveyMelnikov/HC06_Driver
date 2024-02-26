@@ -112,3 +112,53 @@ TEST(hc06_driver, set_baud_rate_460800)
 
   TEST_ASSERT_EQUAL(HC06_OK, status);
 }
+
+TEST(hc06_driver, set_name_anything_success)
+{
+  char* name = "anything";
+  char* output_data = "AT+NAME=anything\r\n";
+  char* input_data = "OKname\r\n";
+
+  mock_hc06_io_expect_write(
+    (uint8_t*)output_data,
+    strlen(output_data)
+  );
+  mock_hc06_io_expect_read_then_return(
+    (uint8_t*)input_data,
+    strlen(input_data)
+  );
+
+  hc06_status status = hc06_set_name(name);
+
+  TEST_ASSERT_EQUAL(HC06_OK, status);
+}
+
+TEST(hc06_driver, set_name_new_name_success)
+{
+  char* name = "new_name";
+  char* output_data = "AT+NAME=new_name\r\n";
+  char* input_data = "OKname\r\n";
+
+  mock_hc06_io_expect_write(
+    (uint8_t*)output_data,
+    strlen(output_data)
+  );
+  mock_hc06_io_expect_read_then_return(
+    (uint8_t*)input_data,
+    strlen(input_data)
+  );
+
+  hc06_status status = hc06_set_name(name);
+
+  TEST_ASSERT_EQUAL(HC06_OK, status);
+}
+
+TEST(hc06_driver, set_name_long_name_fail)
+{
+  char* name = "super_long_name_aaaaa";
+  char* input_data = "OKname\r\n";
+
+  hc06_status status = hc06_set_name(name);
+
+  TEST_ASSERT_EQUAL(HC06_ERROR, status);
+}

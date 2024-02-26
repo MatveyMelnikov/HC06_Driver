@@ -4,7 +4,8 @@
 enum
 {
 	HC06_TIMEOUT = 500U,
-  HC06_AT_DELAY = 20U
+  HC06_AT_DELAY = 20U,
+  HC06_BUFFER_SIZE = 40U
 };
 
 typedef enum

@@ -34,6 +34,9 @@ BUILD_DIR = build
 ######################################
 # source
 ######################################
+
+HC06_DRIVER = External/hc06_driver
+
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
@@ -53,7 +56,10 @@ Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c \
-Core/Src/system_stm32f1xx.c
+Core/Src/system_stm32f1xx.c \
+$(HC06_DRIVER)/Src/hc06_driver.c \
+$(HC06_DRIVER)/Src/hc06_io.c \
+$(HC06_DRIVER)/Src/hc06_time.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -118,7 +124,8 @@ C_INCLUDES =  \
 -IDrivers/STM32F1xx_HAL_Driver/Inc \
 -IDrivers/STM32F1xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
+-I$(HC06_DRIVER)/Inc
 
 
 # compile gcc flags
