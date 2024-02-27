@@ -30,6 +30,6 @@ hc06_status hc06_io_set_baudrate(const uint32_t baudrate)
   HAL_UART_DeInit(hc06_uart);
   hc06_uart->Init.BaudRate = baudrate;
 
-  hc06_status status = HAL_UART_Init(hc06_uart);
+  hc06_status status = (hc06_status)HAL_UART_Init(hc06_uart);
   return status;
 }
