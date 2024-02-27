@@ -9,6 +9,7 @@
 static char buffer[HC06_BUFFER_SIZE];
 static char *baudrate_cmd = "AT+UART=%u,0,0\r\n";
 static char *change_name_cmd = "AT+NAME=%s\r\n";
+static char *change_pin_cmd = "AT+PSWD=\"%04u\"\r\n";
 static char *hex_symbols = "123456789A";
 static const uint32_t baudrate_int[] = {
   1200, 2400, 4800, 9600, 19200, 38400, 
@@ -36,6 +37,11 @@ static void set_baudrate_cmd(hc06_baudrate baudrate)
 static void set_change_name_cmd(const char *const name)
 {
   sprintf(buffer, change_name_cmd, name);
+}
+
+static void set_change_pin_cmd(const uint16_t pin)
+{
+  sprintf(buffer, change_pin_cmd, pin);
 }
 
 static hc06_status send_at_cmd()
@@ -104,6 +110,16 @@ hc06_status hc06_set_name(const char* const name)
     return HC06_ERROR;
 
   set_change_name_cmd(name);
+
+  return send_at_cmd();
+}
+
+hc06_status hc06_set_pin(const uint16_t pin)
+{
+  if (pin > 0x270F) // 4 digits
+    return HC06_ERROR;
+
+  set_change_pin_cmd(pin);
 
   return send_at_cmd();
 }

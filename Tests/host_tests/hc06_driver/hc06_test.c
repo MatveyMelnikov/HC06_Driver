@@ -156,9 +156,55 @@ TEST(hc06_driver, set_name_new_name_success)
 TEST(hc06_driver, set_name_long_name_fail)
 {
   char* name = "super_long_name_aaaaa";
-  char* input_data = "OKname\r\n";
 
   hc06_status status = hc06_set_name(name);
 
   TEST_ASSERT_EQUAL(HC06_ERROR, status);
+}
+
+TEST(hc06_driver, set_1234_pin_success)
+{
+  char* pin = "1234";
+  char* output_data = "AT+PSWD=\"1234\"\r\n";
+  char* input_data = "OKsetpin\r\n";
+
+  mock_hc06_io_expect_write(
+    (uint8_t*)output_data,
+    strlen(output_data)
+  );
+  mock_hc06_io_expect_read_then_return(
+    (uint8_t*)input_data,
+    strlen(input_data)
+  );
+
+  hc06_status status = hc06_set_pin(1234);
+
+  TEST_ASSERT_EQUAL(HC06_OK, status);
+}
+
+TEST(hc06_driver, set_12345_pin_error)
+{
+  hc06_status status = hc06_set_pin(12345);
+
+  TEST_ASSERT_EQUAL(HC06_ERROR, status);
+}
+
+TEST(hc06_driver, set_0000_pin_success)
+{
+  char* pin = "0000";
+  char* output_data = "AT+PSWD=\"0000\"\r\n";
+  char* input_data = "OKsetpin\r\n";
+
+  mock_hc06_io_expect_write(
+    (uint8_t*)output_data,
+    strlen(output_data)
+  );
+  mock_hc06_io_expect_read_then_return(
+    (uint8_t*)input_data,
+    strlen(input_data)
+  );
+
+  hc06_status status = hc06_set_pin(0000);
+
+  TEST_ASSERT_EQUAL(HC06_OK, status);
 }

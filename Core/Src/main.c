@@ -100,10 +100,12 @@ int main(void)
 
   hc06_create();
   hc06_status status = hc06_check_link();
-  status |= hc06_set_name("HC-06");
+  status |= hc06_set_pin(1234);
 
   if (status)
     Error_Handler();
+
+  hc06_destroy();
 
   while (1)
   {

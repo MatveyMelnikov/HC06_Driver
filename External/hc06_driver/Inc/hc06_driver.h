@@ -10,5 +10,6 @@ hc06_status hc06_check_link(void);
 hc06_status hc06_set_baudrate(hc06_baudrate baudrate);
 hc06_baudrate hc_06_determine_baudrate(void);
 hc06_status hc06_set_name(const char* const name);
+hc06_status hc06_set_pin(const uint16_t pin);
 
 #endif
