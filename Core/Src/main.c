@@ -21,6 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdbool.h>
+#include <string.h>
 #include "hc06_driver.h"
 /* USER CODE END Includes */
 
@@ -100,10 +102,25 @@ int main(void)
 
   hc06_create();
   hc06_status status = hc06_check_link();
-  status |= hc06_set_pin(1234);
 
   if (status)
     Error_Handler();
+
+  uint32_t current_tick = HAL_GetTick();
+  static uint8_t data[8];
+  static char *string = "Hello from stm32!";
+  while (true)
+  {
+    if (HAL_GetTick() - current_tick < 100)
+      continue;
+
+    status = hc06_read(data, 1);
+
+    if (status == HC06_OK)
+      status = hc06_write((uint8_t*)string, strlen(string) + 1);
+
+    current_tick = HAL_GetTick();
+  }
 
   hc06_destroy();
 

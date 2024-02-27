@@ -208,3 +208,31 @@ TEST(hc06_driver, set_0000_pin_success)
 
   TEST_ASSERT_EQUAL(HC06_OK, status);
 }
+
+TEST(hc06_driver, write)
+{
+  uint8_t output_data[] = { 0xff, 0xcc, 0x55, 0xaa };
+
+  mock_hc06_io_expect_write(
+    &output_data,
+    sizeof(output_data)
+  );
+
+  hc06_status status = hc06_write(&output_data, sizeof(output_data));
+
+  TEST_ASSERT_EQUAL(HC06_OK, status);
+}
+
+TEST(hc06_driver, read)
+{
+  uint8_t input_data[] = { 0xff, 0xcc, 0x55, 0xaa };
+
+  mock_hc06_io_expect_read_then_return(
+    &input_data,
+    sizeof(input_data)
+  );
+
+  hc06_status status = hc06_read(&input_data, sizeof(input_data));
+
+  TEST_ASSERT_EQUAL(HC06_OK, status);
+}

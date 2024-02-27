@@ -123,3 +123,13 @@ hc06_status hc06_set_pin(const uint16_t pin)
 
   return send_at_cmd();
 }
+
+hc06_status hc06_write(const uint8_t *const data, const uint16_t size)
+{
+  return hc06_io_write(data, size);
+}
+
+hc06_status hc06_read(uint8_t *const data, const uint16_t size)
+{
+  return hc06_io_read(data, size);
+}

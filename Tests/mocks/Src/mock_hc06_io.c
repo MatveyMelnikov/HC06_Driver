@@ -124,7 +124,7 @@ void mock_hc06_io_destroy(void)
 
 void mock_hc06_io_expect_write(
   const uint8_t *const data,
-  const uint8_t data_size
+  const uint16_t data_size
 )
 {
   fail_when_no_room_for_expectations();
@@ -133,7 +133,7 @@ void mock_hc06_io_expect_write(
 
 void mock_hc06_io_expect_read_then_return(
   const uint8_t *const data,
-  const uint8_t data_size
+  const uint16_t data_size
 )
 {
   fail_when_no_room_for_expectations();
@@ -166,7 +166,7 @@ void mock_hc06_io_verify_complete(void)
 
 hc06_status hc06_io_read(
   uint8_t *const data,
-  const uint8_t data_size
+  const uint16_t data_size
 )
 {
   expectation current_expectation = expectations[get_expectation_count];
@@ -182,7 +182,7 @@ hc06_status hc06_io_read(
 
 hc06_status hc06_io_write(
   const uint8_t *const data,
-  const uint8_t data_size
+  const uint16_t data_size
 )
 {
   expectation current_expectation = expectations[get_expectation_count];

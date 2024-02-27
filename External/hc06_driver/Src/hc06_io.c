@@ -6,7 +6,7 @@ extern UART_HandleTypeDef *hc06_uart;
 
 hc06_status hc06_io_read(
   uint8_t *const data,
-  const uint8_t data_size
+  const uint16_t data_size
 )
 {
   return (hc06_status)HAL_UART_Receive(
@@ -16,7 +16,7 @@ hc06_status hc06_io_read(
 
 hc06_status hc06_io_write(
   const uint8_t *const data,
-  const uint8_t data_size
+  const uint16_t data_size
 )
 {
   return (hc06_status)HAL_UART_Transmit(
