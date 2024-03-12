@@ -24,6 +24,14 @@ hc06_status hc06_io_write(
   );
 }
 
+hc06_status hc06_io_read_external_data(
+  uint8_t *const data,
+  const uint16_t data_size
+)
+{
+  return (hc06_status)HAL_UART_Receive_DMA(hc06_uart, data, data_size);
+}
+
 hc06_status hc06_io_set_baudrate(const uint32_t baudrate)
 {
   HAL_UART_Abort_IT(hc06_uart);

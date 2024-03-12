@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 static char buffer[HC06_BUFFER_SIZE];
 static char *baudrate_cmd = "AT+UART=%u,0,0\r\n";
@@ -16,6 +17,7 @@ static const uint32_t baudrate_int[] = {
   57600, 115200, 230400, 460800
 };
 static hc06_baudrate current_baudrate;
+static bool is_data_receiving = false;
 
 // Defines -------------------------------------------------------------------
 
@@ -131,5 +133,24 @@ hc06_status hc06_write(const uint8_t *const data, const uint16_t size)
 
 hc06_status hc06_read(uint8_t *const data, const uint16_t size)
 {
-  return hc06_io_read(data, size);
+  //return hc06_io_read(data, size);
+  if (is_data_receiving)
+    return HC06_BUSY;
+
+  hc06_status status = hc06_io_read_external_data(data, size);
+  if (status)
+    return status;
+
+  is_data_receiving = true;
+  return status;
+}
+
+hc06_status hc06_receive_complete(void)
+{
+  is_data_receiving = false;
+}
+
+bool hc06_is_data_received(void)
+{
+  return !is_data_receiving;
 }

@@ -44,6 +44,7 @@
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
 UART_HandleTypeDef *hc06_uart = &huart2;
@@ -52,6 +53,7 @@ UART_HandleTypeDef *hc06_uart = &huart2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
@@ -91,6 +93,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
@@ -109,17 +112,23 @@ int main(void)
   uint32_t current_tick = HAL_GetTick();
   static uint8_t data[8];
   static char *string = "Hello from stm32!";
+
+  hc06_read(data, 1);
   while (true)
   {
-    if (HAL_GetTick() - current_tick < 100)
-      continue;
-
-    status = hc06_read(data, 1);
-
-    if (status == HC06_OK)
+    if (hc06_is_data_received())
+    {
       status = hc06_write((uint8_t*)string, strlen(string) + 1);
+      HAL_UART_Transmit(&huart1, (uint8_t*)data, 1, 100U);
 
+      hc06_read(data, 1);
+    }
+
+    if (HAL_GetTick() - current_tick < 500)
+      continue;
+    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
     current_tick = HAL_GetTick();
+
   }
 
   hc06_destroy();
@@ -236,23 +245,56 @@ static void MX_USART2_UART_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Channel6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel6_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel6_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* USER CODE BEGIN MX_GPIO_Init_1 */
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  hc06_receive_complete();
+}
 
 /* USER CODE END 4 */
 
