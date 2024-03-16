@@ -225,7 +225,7 @@ TEST(hc06_driver, read)
 {
   uint8_t input_data[] = { 0xff, 0xcc, 0x55, 0xaa };
 
-  mock_hc06_io_expect_read_then_return(
+  mock_hc06_io_expect_read_external_then_return(
     input_data,
     sizeof(input_data)
   );

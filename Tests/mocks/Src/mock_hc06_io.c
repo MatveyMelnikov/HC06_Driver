@@ -16,6 +16,7 @@ typedef struct
 enum
 {
   IO_READ,
+  IO_EXTERNAL_READ,
   IO_WRITE,
   IO_BAUDRATE,
   NO_EXPECTED_VALUE = -1
@@ -140,6 +141,15 @@ void mock_hc06_io_expect_read_then_return(
   record_expectation(IO_READ, data, data_size);
 }
 
+void mock_hc06_io_expect_read_external_then_return(
+  const uint8_t *const data,
+  const uint16_t data_size
+)
+{
+  fail_when_no_room_for_expectations();
+  record_expectation(IO_EXTERNAL_READ, data, data_size);
+}
+
 void mock_hc06_io_expect_baudrate_change(void)
 {
   fail_when_no_room_for_expectations();
@@ -193,6 +203,22 @@ hc06_status hc06_io_write(
 
   get_expectation_count++;
 
+  return HC06_OK;
+}
+
+hc06_status hc06_io_read_external_data(
+  uint8_t *const data,
+  const uint16_t data_size
+)
+{
+  expectation current_expectation = expectations[get_expectation_count];
+
+  fail_when_no_init();
+  check_kind(&current_expectation, IO_EXTERNAL_READ);
+
+  memcpy(data, current_expectation.data, data_size);
+    
+  get_expectation_count++;
   return HC06_OK;
 }
 

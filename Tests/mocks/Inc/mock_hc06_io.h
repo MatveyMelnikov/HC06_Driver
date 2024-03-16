@@ -13,6 +13,10 @@ void mock_hc06_io_expect_read_then_return(
   const uint8_t *const data,
   const uint16_t data_size
 );
+void mock_hc06_io_expect_read_external_then_return(
+  const uint8_t *const data,
+  const uint16_t data_size
+);
 void mock_hc06_io_expect_baudrate_change(void);
 void mock_hc06_io_verify_complete(void);
 

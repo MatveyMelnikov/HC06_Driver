@@ -104,6 +104,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   hc06_create();
+  hc06_set_baudrate(HC06_115200);
   hc06_status status = hc06_check_link();
 
   if (status)
