@@ -1,6 +1,11 @@
+#include "main.h"
 #include "unity_fixture.h"
 #include "hc06_driver.h"
-#include "hc06_io.h"
+#include "builder_hc06_driver.h"
+
+// Global variables ----------------------------------------------------------
+
+extern UART_HandleTypeDef huart2;
 
 // Static functions ----------------------------------------------------------
 
@@ -20,7 +25,7 @@ TEST_GROUP(hc06_driver);
 
 TEST_SETUP(hc06_driver)
 {
-  hc06_create();
+  builder_hc06_driver_build(&huart2);
 }
 
 TEST_TEAR_DOWN(hc06_driver)
@@ -54,11 +59,11 @@ TEST(hc06_driver, set_baud_rate_1200)
   TEST_ASSERT_EQUAL(HC06_1200, baudrate);
 }
 
-TEST(hc06_driver, set_baud_rate_460800)
+TEST(hc06_driver, set_baud_rate_115200)
 {
-  hc06_status status = hc06_set_baudrate(HC06_460800);
+  hc06_status status = hc06_set_baudrate(HC06_115200);
   hc06_baudrate baudrate = hc_06_determine_baudrate();
 
   TEST_ASSERT_EQUAL(HC06_OK, status);
-  TEST_ASSERT_EQUAL(HC06_460800, baudrate);
+  TEST_ASSERT_EQUAL(HC06_115200, baudrate);
 }
